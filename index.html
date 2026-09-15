@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="일간, 주간, 월간으로 계획을 정리하는 2026년 달력 투두리스트">
+  <title>2026 초록 플래너</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23165b35'/%3E%3Ctext x='32' y='45' font-size='38' text-anchor='middle'%3E🌿%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="leaf-layer" aria-hidden="true">
+    <span>🍃</span><span>🌿</span><span>🍂</span><span>🍃</span><span>🌱</span><span>🍀</span><span>🌿</span><span>🍃</span>
+  </div>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="2026 초록 플래너 홈">
+        <span class="brand-mark">26</span>
+        <span><strong>초록 플래너</strong><small>2026 YEAR PLAN</small></span>
+      </a>
+      <div class="year-progress" aria-label="2026년 진행률">
+        <span>2026년</span>
+        <div class="progress-track"><i id="yearProgress"></i></div>
+        <strong id="yearProgressText">0%</strong>
+      </div>
+      <button class="today-button" id="todayButton" type="button">오늘로 이동</button>
+    </header>
+
+    <section class="workspace">
+      <aside class="sidebar">
+        <div class="mini-calendar">
+          <div class="calendar-heading">
+            <button class="icon-button" id="prevMonth" type="button" aria-label="이전 달">‹</button>
+            <button class="month-title" id="monthTitle" type="button" aria-label="월 선택"></button>
+            <button class="icon-button" id="nextMonth" type="button" aria-label="다음 달">›</button>
+          </div>
+          <div class="weekday-row" aria-hidden="true">
+            <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+          </div>
+          <div class="calendar-grid" id="miniCalendar"></div>
+        </div>
+
+        <div class="priority-guide">
+          <div class="section-label">중요도</div>
+          <div class="priority-item"><i class="priority-dot high"></i><span>높음</span><small>꼭 해내기</small></div>
+          <div class="priority-item"><i class="priority-dot medium"></i><span>보통</span><small>차근차근</small></div>
+          <div class="priority-item"><i class="priority-dot low"></i><span>낮음</span><small>여유롭게</small></div>
+        </div>
+
+        <blockquote>“한 번에 하나씩,<br>오늘의 초록을 채워요.”</blockquote>
+      </aside>
+
+      <section class="main-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow" id="dateEyebrow">2026</p>
+            <h1 id="viewTitle">오늘의 할 일</h1>
+          </div>
+          <div class="view-tabs" role="tablist" aria-label="보기 방식">
+            <button class="view-tab active" data-view="day" role="tab" aria-selected="true">일간</button>
+            <button class="view-tab" data-view="week" role="tab" aria-selected="false">주간</button>
+            <button class="view-tab" data-view="month" role="tab" aria-selected="false">월간</button>
+          </div>
+        </div>
+
+        <div id="dayView" class="view active">
+          <div class="day-summary">
+            <div class="date-card"><strong id="selectedDay">01</strong><span id="selectedWeekday">목요일</span></div>
+            <div class="summary-copy"><strong id="dayGreeting">가볍게 시작해 볼까요?</strong><span id="completionSummary">할 일을 추가해 하루를 채워보세요.</span></div>
+            <div class="completion-ring" id="completionRing"><span id="completionPercent">0%</span></div>
+          </div>
+          <div class="task-composer">
+            <label class="sr-only" for="taskInput">새 할 일</label>
+            <input id="taskInput" type="text" maxlength="80" placeholder="새로운 할 일을 적어보세요" autocomplete="off">
+            <label class="sr-only" for="prioritySelect">중요도</label>
+            <select id="prioritySelect">
+              <option value="medium">보통</option>
+              <option value="high">높음</option>
+              <option value="low">낮음</option>
+            </select>
+            <button id="addTaskButton" type="button"><span>＋</span> 추가</button>
+          </div>
+          <div class="task-list" id="taskList"></div>
+        </div>
+
+        <div id="weekView" class="view">
+          <div class="period-nav">
+            <button id="prevWeek" class="plain-nav" type="button">← 이전 주</button>
+            <strong id="weekRange"></strong>
+            <button id="nextWeek" class="plain-nav" type="button">다음 주 →</button>
+          </div>
+          <div class="week-grid" id="weekGrid"></div>
+        </div>
+
+        <div id="monthView" class="view">
+          <div class="period-nav">
+            <button id="prevMonthLarge" class="plain-nav" type="button">← 이전 달</button>
+            <strong id="largeMonthTitle"></strong>
+            <button id="nextMonthLarge" class="plain-nav" type="button">다음 달 →</button>
+          </div>
+          <div class="month-board-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
+          <div class="month-board" id="monthBoard"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
